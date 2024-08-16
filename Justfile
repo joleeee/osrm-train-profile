@@ -4,7 +4,6 @@ default:
 download:
     #!/usr/bin/env sh
     for country in $(grep -v "\#" countries.wanted); do
-        echo $country
         aria2c -x 10 -d world -c https://download.geofabrik.de/$country-latest.osm.pbf
     done
 
@@ -17,6 +16,20 @@ filter:
             world/$BASE-latest.osm.pbf \
             -o filtered/$BASE-latest.osm.pbf \
             --overwrite
+    done
+
+# to decrease peak disk space, download+filter in one
+downloadfilter:
+    #!/usr/bin/env sh
+    for country in $(grep -v "\#" countries.wanted); do
+        BASE=$(basename $country)
+        aria2c -x 10 -d world -c https://download.geofabrik.de/$country-latest.osm.pbf
+        osmium tags-filter \
+            --expressions=filter.params \
+            world/$BASE-latest.osm.pbf \
+            -o filtered/$BASE-latest.osm.pbf \
+            --overwrite
+        rm world/$BASE-latest.osm.pbf
     done
 
 combine:
@@ -33,6 +46,11 @@ osrm:
     # osrm-customize output/combined.osm.pbf
 
 all: download filter combine osrm
+allsmall: downloadfilter combine osrm
+
+clean:
+    #!/usr/bin/env sh
+    rm filtered/* output/* world/*
 
 serve:
     #!/usr/bin/env sh
