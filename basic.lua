@@ -58,7 +58,8 @@ function process_way(profile, way, result, relations)
         data.railway ~= 'rail' and
         data.railway ~= 'turntable' and
         data.railway ~= 'traverser' and
-        data.railway  ~= 'ferry'
+        data.railway ~= 'ferry' and
+	    data.railway ~= 'construction' -- jole time
     ) then
         return
     -- Remove military and tourism rails
