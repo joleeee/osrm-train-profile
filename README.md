@@ -1,3 +1,8 @@
+# HOW TO RUN THE NIX THING
+```sh
+nix develop
+```
+
 # OSRM Lua profile for trains
 
 This repo contains a profile for routing (mostly freight) trains with [OSRM](http://project-osrm.org/). This enables you to find the shortest path by train between 2 points and also do map matching with OSRM.
