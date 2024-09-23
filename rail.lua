@@ -78,7 +78,10 @@ function process_way(profile, way, result, relations)
         data.gauge ~= 1520 and not string.find(data.gauge, "1520") and
         data.gauge ~= 1524 and not string.find(data.gauge, "1524") and
         data.gauge ~= 1600 and not string.find(data.gauge, "1600") and
-        data.gauge ~= 1668 and not string.find(data.gauge, "1668")
+        data.gauge ~= 1668 and not string.find(data.gauge, "1668") and
+        data.gauge ~= 1067 and not string.find(data.gauge, "1067") and -- jp
+        data.gauge ~= 1372 and not string.find(data.gauge, "1372") and -- jp
+        data.gauge ~=  762 and not string.find(data.gauge,  "762")     -- jp
    ) then
         return
     end
