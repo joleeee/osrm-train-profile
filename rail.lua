@@ -59,8 +59,10 @@ function process_way(profile, way, result, relations)
         data.railway ~= 'turntable' and
         data.railway ~= 'traverser' and
         data.railway ~= 'ferry' and
-	    data.railway ~= 'construction' and -- jole time
-        data.railway ~= 'narrow_gauge' -- ex Rhaetian Railway is 1000mm which we already allow, but it is railway=narrow_gauge
+        data.railway ~= 'construction' and -- jole time
+        data.railway ~= 'narrow_gauge' and -- ex Rhaetian Railway is 1000mm which we already allow, but it is railway=narrow_gauge
+        data.railway ~= 'subway' and -- jole time
+        data.railway ~= 'light_rail' -- jole time
     ) then
         return
     -- Remove military and tourism rails
