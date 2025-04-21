@@ -37,13 +37,10 @@ downloadfilter:
 combine:
     #!/usr/bin/env sh
     mkdir -p output/rail
-    osmium merge filtered/rail/*.osm.pbf -o output/rail/combined.osm.pbf
+    osmium merge filtered/rail/*.osm.pbf -o output/rail/combined.osm.pbf --overwrite
 
 osrm:
     #!/usr/bin/env sh
-    #docker run -t -v $(pwd):/opt/host osrm/osrm-backend:v5.22.0 osrm-extract /opt/host/output/rail/combined.osm.pbf -p /opt/host/rail.lua
-    #docker run -t -v $(pwd):/opt/host osrm/osrm-backend:v5.22.0 osrm-partition /opt/host/output/rail/combined.osm.pbf
-    #docker run -t -v $(pwd):/opt/host osrm/osrm-backend:v5.22.0 osrm-customize /opt/host/output/rail/combined.osm.pbf
     osrm-extract   output/rail/combined.osm.pbf -p rail.lua
     osrm-partition output/rail/combined.osm.pbf
     osrm-customize output/rail/combined.osm.pbf
@@ -57,5 +54,4 @@ clean:
 
 serve IP PORT:
     #!/usr/bin/env sh
-    #docker run --rm -t -i -p 5001:5000 -v $(pwd):/opt/host osrm/osrm-backend:v5.22.0 osrm-routed --algorithm mld /opt/host/output/rail/combined.osrm
     osrm-routed --algorithm mld output/rail/combined.osrm --ip {{IP}} --port {{PORT}}
