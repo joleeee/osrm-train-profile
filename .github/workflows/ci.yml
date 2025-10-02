@@ -9,11 +9,14 @@ jobs:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
+          build-mount-path: /var/lib/docker/
           root-reserve-mb: 512
           swap-size-mb: 1024
           remove-dotnet: 'true'
+      - name: Restart docker
+        run: sudo service docker restart
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build
         run: |
