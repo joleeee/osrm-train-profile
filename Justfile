@@ -9,44 +9,44 @@ download:
 
 filter:
     #!/usr/bin/env sh
-    mkdir filtered/rail
+    mkdir -p filtered
     for country in $(grep -v "\#" countries.wanted); do
         BASE=$(basename $country)
         osmium tags-filter \
             --expressions=filter.params \
             world/$BASE-latest.osm.pbf \
-            -o filtered/rail/$BASE-latest.osm.pbf \
+            -o filtered/$BASE-latest.osm.pbf \
             --overwrite
     done
 
 # to decrease peak disk space, download+filter in one
 downloadfilter:
     #!/usr/bin/env sh
-    mkdir filtered/rail
+    mkdir -p filtered
     for country in $(grep -v "\#" countries.wanted); do
-        BASE=$(basename $country)
-        aria2c -x 10 -d world -c https://download.geofabrik.de/$country-latest.osm.pbf
+        DL="world/$country.osm.pbf"
+        OUT="filtered/$country.osm.pbf"
+        # https://github.com/nixos/nix/issues/13523
+        # TODO: do check certificate, when ^ is fixed
+        aria2c --check-certificate=false -x 10 -c https://download.geofabrik.de/$country-latest.osm.pbf -o $DL
         osmium tags-filter \
             --expressions=filter.params \
-            world/$BASE-latest.osm.pbf \
-            -o filtered/rail/$BASE-latest.osm.pbf \
+            "$DL" \
+            -o "$OUT" \
             --overwrite
-        rm world/$BASE-latest.osm.pbf
+        rm "$DL"
     done
 
 combine:
     #!/usr/bin/env sh
-    mkdir -p output/rail
-    osmium merge filtered/rail/*.osm.pbf -o output/rail/combined.osm.pbf
+    mkdir -p output
+    osmium merge filtered/*.osm.pbf -o output/combined.osm.pbf
 
 osrm:
     #!/usr/bin/env sh
-    #docker run -t -v $(pwd):/opt/host osrm/osrm-backend:v5.22.0 osrm-extract /opt/host/output/rail/combined.osm.pbf -p /opt/host/rail.lua
-    #docker run -t -v $(pwd):/opt/host osrm/osrm-backend:v5.22.0 osrm-partition /opt/host/output/rail/combined.osm.pbf
-    #docker run -t -v $(pwd):/opt/host osrm/osrm-backend:v5.22.0 osrm-customize /opt/host/output/rail/combined.osm.pbf
-    osrm-extract   output/rail/combined.osm.pbf -p rail.lua
-    osrm-partition output/rail/combined.osm.pbf
-    osrm-customize output/rail/combined.osm.pbf
+    osrm-extract   output/combined.osm.pbf -p rail.lua
+    osrm-partition output/combined.osm.pbf
+    osrm-customize output/combined.osm.pbf
 
 all: download filter combine osrm
 allsmall: downloadfilter combine osrm
@@ -57,5 +57,4 @@ clean:
 
 serve IP PORT:
     #!/usr/bin/env sh
-    #docker run --rm -t -i -p 5001:5000 -v $(pwd):/opt/host osrm/osrm-backend:v5.22.0 osrm-routed --algorithm mld /opt/host/output/rail/combined.osrm
     osrm-routed --algorithm mld output/rail/combined.osrm --ip {{IP}} --port {{PORT}}
