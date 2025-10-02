@@ -1,0 +1,2 @@
+nix-shell -p osrm-backend -p osmium-tool --run 'just filter combine osrm'
+nix-shell -p osrm-backend --run 'just serve 100.112.53.42 1233'

@@ -40,7 +40,7 @@ downloadfilter:
 combine:
     #!/usr/bin/env sh
     mkdir -p output
-    osmium merge filtered/*.osm.pbf -o output/combined.osm.pbf
+    osmium merge filtered/*.osm.pbf -o output/combined.osm.pbf --overwrite
 
 osrm:
     #!/usr/bin/env sh
