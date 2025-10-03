@@ -12,7 +12,7 @@ jobs:
           build-mount-path: /var/lib/docker/
           root-reserve-mb: 512
           swap-size-mb: 1024
-          remove-dotnet: 'true'
+          remove-dotnet: "true"
       - name: Restart docker
         run: sudo service docker restart
       - name: Checkout
@@ -23,9 +23,10 @@ jobs:
 
       - name: Docker Build
         run: |
-          COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
-          docker build -t ghcr.io/${{ github.repository }}:$COMMIT_SHA .
+          docker build -t ghcr.io/${{ github.repository }}:latest .
       - name: Push image to GHCR
         run: |
+          docker push ghcr.io/${{ github.repository }}:latest
           COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+          docker tag ghcr.io/${{ github.repository }}:latest ghcr.io/${{ github.repository }}:$COMMIT_SHA
           docker push ghcr.io/${{ github.repository }}:$COMMIT_SHA
