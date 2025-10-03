@@ -28,4 +28,4 @@ jobs:
       - name: Push image to GHCR
         run: |
           COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
-          docker push ghcr.io//${{ github.repository }}:$COMMIT_SHA
+          docker push ghcr.io/${{ github.repository }}:$COMMIT_SHA
