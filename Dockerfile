@@ -11,6 +11,7 @@ RUN nix-shell -p osmium-tool osrm-backend just aria2 --command 'just osrm && rm 
 
 
 FROM nixos/nix AS runner
+LABEL org.opencontainers.image.source=https://github.com/joleeee/osrm-train-profile
 
 RUN nix-channel --update
 RUN nix-env -iA nixpkgs.osrm-backend
