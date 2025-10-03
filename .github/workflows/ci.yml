@@ -1,0 +1,31 @@
+name: My build action requiring more space
+on: push
+
+jobs:
+  build:
+    name: Build my artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          build-mount-path: /var/lib/docker/
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+      - name: Restart docker
+        run: sudo service docker restart
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Log in to ghcr.io
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+
+      - name: Docker Build
+        run: |
+          COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+          docker build -t ghcr.io/${{ github.repository }}:$COMMIT_SHA .
+      - name: Push image to GHCR
+        run: |
+          COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+          docker push ghcr.io/${{ github.repository }}:$COMMIT_SHA
