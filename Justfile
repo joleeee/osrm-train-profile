@@ -57,4 +57,4 @@ clean:
 
 serve IP PORT:
     #!/usr/bin/env sh
-    osrm-routed --algorithm mld output/rail/combined.osrm --ip {{IP}} --port {{PORT}}
+    osrm-routed --algorithm mld output/combined.osrm --ip {{IP}} --port {{PORT}}

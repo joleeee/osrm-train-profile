@@ -17,11 +17,14 @@ jobs:
         run: sudo service docker restart
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Log in to ghcr.io
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build
+
+      - name: Docker Build
         run: |
-          echo "Free space:"
-          df -h
-      - name: Build
+          COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:$COMMIT_SHA .
+      - name: Push image to GHCR
         run: |
-          docker build .
+          docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:$COMMIT_SHA
